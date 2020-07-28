@@ -1,0 +1,189 @@
+chef-runner
+And the story behind it
+Tags: Chef
+
+Mathias Lafeldt
+Infrastructure Developer at Jimdo
+http://mlafeldt.github.io
+@mlafeldt
+
+* I work at Jimdo
+
+.image images/jimdo-team.jpg
+
+* Once upon a time...
+
+* practicingruby.com
+
+.image images/practicingruby.png
+
+- 90+ delightful coding lessons
+- curated by the awesome Gregory Brown
+- with *contributions* from the Ruby community
+
+* The pitch
+
+Hey Greg,
+
+Just a quick question: would you be generally interested in a guest
+post about Chef, the Ruby-based infrastructure automation framework?
+Chef is one of the most popular Ruby tools for systems administrators
+and engineers. I'm sure such a topic would be well received. [...]
+
+I'd really love to contribute to Practicing Ruby and Chef is the Ruby
+software I know most about.
+
+-Mathias
+
+* The mission
+
+- set up production-like environment for Practicing Ruby Rails app
+- use Vagrant & Chef Solo
+- write an article about it (collaboration)
+
+.image images/chef-logo.png
+
+* Infrastructure of practicingruby.com
+
+- Rails 3.2 app
+- Ruby 2.0
+- Nginx
+- Unicorn
+- PostgreSQL
+- God
+- Ubuntu 12.04 LTS
+- (Capistrano for deployment)
+
+* How hard can it be?
+
+.image images/no-idea.jpg
+
+* I got 99 problems
+
+- not familiar with Rails (stack)
+- Rails app not made to be run in VM
+- develop first-class Chef cookbook for special audience
+- no direct access to production system
+- remember: it's about the article!
+- and...
+
+* ...the most annoying problem
+
+.image images/vagrant-meme.jpg
+
+* Scratching your own itch
+
+When it comes to dev/testing, fast feedback is everything. Vagrant needs >5s
+before it even starts provisioning. Each time. Let's fix that.
+
+— Me on Twitter (1 Nov 2013)
+
+* Say hello to chef-runner
+
+* What is chef-runner?
+
+- command-line tool to speed up Chef cookbook development
+- fast alternative to painfully slow vagrant provision
+- integrates with Vim
+
+Goal: change infrastructure code and get *immediate*feedback*
+
+Example: try 4 different ways to install Ruby
+
+* Basic usage
+
+Start Vagrant machine
+
+    $ cd my-awesome-cookbook/
+    $ vagrant up
+
+Selectively run Chef recipes inside VM
+
+    $ chef-runner
+    $ chef-runner recipes/foo.rb
+    $ chef-runner foo
+    $ chef-runner dogs::bar
+    $ chef-runner recipes/foo.rb bar dogs::baz
+
+* More features
+
+Load attributes from JSON file
+
+    $ chef-runner -j chef.json
+
+Configure Chef output
+
+    $ chef-runner -F doc -l warn
+
+Specify name of Vagrant machine
+
+    $ chef-runner -M db
+
+Set hostname for direct SSH access
+
+    $ chef-runner -H example.local
+
+* How does it work?
+
+- small shell script (~100 LOC)
+- directly executes Chef Solo over SSH (vagrant ssh or OpenSSH)
+- overrides Chef runlist to selectively run recipes
+- installs cookbook dependencies with Berkshelf
+- updates cookbook changes with rsync
+
+* Installation
+
+With curl
+
+    $ curl -Ls http://git.io/chef-runner > ~/bin/chef-runner
+    $ chmod +x ~/bin/chef-runner
+
+With Homebrew
+
+    $ brew tap mlafeldt/chef
+    $ brew install chef-runner
+
+Thanks to @fholzhauer! <3
+
+* Vim integration
+
+Add key mapping to .vimrc
+
+    map ,r :w\|!chef-runner %<cr>
+
+Include custom options
+
+    map ,r :w\|!chef-runner -F min -l warn %<cr>
+
+Open recipe in Vim and type comma then r
+
+    $ vim recipes/default.rb
+
+And enjoy!
+
+* Roadmap
+
+- chef-runner.vim plugin
+- support for Test Kitchen, EC2, etc.
+- run integration test after converge (?)
+- rewrite in Ruby or Go (?)
+
+* Happy End
+
+.image images/happy-cat.jpg
+
+* Achievements
+
+Ship cookbook ✔
+
+.link https://github.com/elm-city-craftworks/practicing-ruby-cookbook
+
+Ship article ✔
+
+.link https://practicingruby.com/articles/infrastructure-automation?u=c94a53804e practicingruby.com/articles/infrastructure-automation
+
+Ship useful tool ✔
+
+.link https://github.com/mlafeldt/chef-runner
+
+* Have fun and tell people ✔

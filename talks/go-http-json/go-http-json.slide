@@ -1,0 +1,132 @@
+Talking to HTTP/JSON APIs with Go
+Go User Group Hamburg 08/2013
+Tags: Go, HTTP, JSON, Testing
+
+Mathias Lafeldt
+Infrastructure Developer at Jimdo
+http://mlafeldt.github.io
+@mlafeldt
+
+* About me
+
+- Infrastructure developer at Jimdo
+- Automate all the things!
+- Web operations
+
+Technologies:
+
+- AWS
+- Puppet
+- Ruby
+- *Go*
+
+@mlafeldt on GitHub/Twitter
+
+* We <3 GitHub...
+
+.image images/jimdo_logo.png
+
+.image images/octocat.jpg 220 270
+
+* ...most of the time.
+
+.image images/githubstatus-twitter.png
+
+* status.github.com
+
+.image images/status.github.com.png
+
+* status.github.com/api
+
+.image images/status.github.com-api.png
+
+* Let's write a Go client library!
+
+For each API endpoint, we must...
+
+- download JSON data via HTTP
+- decode JSON data into appropriate Go types
+- provide a high-level function, e.g. `GetLastMessage`
+- have a test
+- (document exported functions, types, etc.)
+
+* HTTP Requests in Go
+
+* HTTP GET
+
+.play code/http1.go /^import/,
+
+* Response body
+
+.play code/http2.go /^import "net/,
+
+* Decoding JSON in Go
+
+* Decoding JSON into map
+
+.play code/json1.go /^import "encoding/,
+
+* Decoding JSON into struct
+
+.play code/json2.go /^type/,
+
+* Putting it all together
+
+* go-ghstatus
+
+.link http://godoc.org/github.com/mlafeldt/go-ghstatus
+
+.image images/go-ghstatus.png
+
+* What about testing?
+
+* Integration test
+
+.code code/test1.go
+
+* httptest to the rescue!
+
+.play code/test2.go /^import "net\/http\/httptest"/,
+
+* Table-driven (unit) testing
+
+.code code/test3.go
+
+* Real HTTP or not?
+
+.code code/test4.go
+
+Unit test
+
+  $ go test ./...
+  ok    github.com/mlafeldt/go-ghstatus  0.030s
+
+Integration test
+
+  $ REALHTTP=1 go test ./...
+  ok    github.com/mlafeldt/go-ghstatus  1.189s
+
+* Wrap up
+
+- download data with http.Get & ioutil.ReadAll
+- decode JSON data with json.Unmarshal into struct (with tags)
+- unit-test with httptest.NewServer & http.HandlerFunc
+- table-driven tests are awesome
+
+* Links
+
+GitHub System Status API
+
+.link https://status.github.com/api
+
+go-ghstatus
+
+.link https://github.com/mlafeldt/go-ghstatus
+
+golang.org
+
+.link http://golang.org/pkg/net/http/ package http
+.link http://golang.org/pkg/net/http/httptest/ package httptest
+.link http://golang.org/pkg/encoding/json/ package json
+.link http://golang.org/doc/articles/json_and_go.html Article: JSON and Go
+.link http://golang.org/doc/articles/wiki/ Article: Writing Web Applications
